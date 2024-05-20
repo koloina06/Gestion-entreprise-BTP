@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"></meta>
+  <title>PDF Content</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: lightgray;
+    }
+  </style>
+</head>
+<body>
+                  <h1 th:text="'Devis: '+ ${devis.getRefDevis()}"></h1>
+                  <p th:text="'Du '+ ${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')} + ' au' + ${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></p>
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Numero</th>
+                      <th>Travaux</th>
+                      <th>Unite</th>
+                      <th>Quantite</th>
+                      <th>Prix Unitaire</th>
+                      <th>Prix Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="details : ${detailsList}">
+                      <td th:text="${details.getCode()}"></td>
+                      <td th:text="${details.getNomTypeTravaux()}"></td>
+                      <td th:text="${details.getUnite().getNomUnite()}"></td>
+                      <td th:text="${details.getQuantite()}"></td>
+                      <td th:text="${#numbers.formatDecimal(details.getPrixUnitaire(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                      <td th:text="${#numbers.formatDecimal(details.getPrixTotal(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">Montant Finition</td>
+                      <td th:text="${#numbers.formatDecimal(devis.getFinition().getMontant(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">Montant Total</td>
+                      <td th:if="${devis.getRestePaye()==0}">0 Ar</td>
+                      <td th:if="${devis.getRestePaye()>0}" th:text="${#numbers.formatDecimal(devis.getRestePaye(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+          <h1>Liste des paiements</h1>
+
+                  <table class="table table-hover" th:if="${paiements.size()>0}">
+                    <thead>
+                    <tr>
+                      <th>Date de paiement</th>
+                      <th>Montant payé</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="paiement : ${paiements}">
+                      <td th:text="${#dates.format(paiement.getDatePaiement(), 'dd-MM-yyyy')}"></td>
+                      <td th:text="${#numbers.formatDecimal(paiement.getMontant(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="1">Total montant payé</td>
+                      <td th:text="${#numbers.formatDecimal(montantPaye, 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+              <span th:if="${paiements.size()==0}">Aucun Paiement effectué</span>
+
+
+</body>
+</html>
+

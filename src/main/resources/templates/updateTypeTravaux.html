@@ -1,0 +1,79 @@
+<div th:if="${session.admin != null}">
+<th:block th:insert="~{/header}"></th:block>
+<th:block th:insert="~{/sidebar}"></th:block>
+
+<main id="main" class="main">
+  <section class="section dashboard">
+    <div class="row">
+      <!-- Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-12">
+            <div class="card top-selling overflow-auto"  style="width: 1000px;">
+              <div class="card-body pb-0">
+                <h5 class="card-title">Modifier type travaux</h5>
+                <div th:if="${succes}">
+                  <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle me-1" ></i>
+                    <span th:text="${succes}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </div>
+
+                <div th:if="${erreur}">
+                  <div class="alert alert-danger" role="alert">
+                    <div th:each="e: ${erreur}" th:text="${e.getDefaultMessage()}"></div>
+                  </div>
+                </div>
+
+                <form action="/btp/typeTravaux/update" novalidate method="post" th:object="${travaux}">
+                  <input type="hidden" name="idTypeTravaux" th:value="${typeTravaux.getIdTypeTravaux()}">
+                  <div class="mb-3">
+                    <label for="code" class="form-label">Code</label>
+                    <input type="text" class="form-control" id="code" name="code" th:value="${typeTravaux.getCode()}" required>
+                    <span style="color: red" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></span>
+                  </div>
+                  <div class="mb-3">
+                    <label for="type" class="form-label">Type</label>
+                    <input type="text" id="type" name="nomTypeTravaux" rows="4" class="form-control" required th:value="${typeTravaux.getNomTypeTravaux()}"> </input>
+                    <span style="color: red" th:if="${#fields.hasErrors('nomTypeTravaux')}" th:errors="*{nomTypeTravaux}"></span>
+                  </div>
+                  <div class="mb-3">
+                    <label for="unite" class="form-label">Unite</label>
+                    <select class="form-select" aria-label="Default select example" name="unite" id="unite" required>
+                      <option th:value="${typeTravaux.getUnite().getIdUnite()}" th:text="${typeTravaux.getUnite().getNomUnite()}" selected></option>
+                      <option th:each="unite : ${unites}" th:value="${unite.getIdUnite()}" th:text="${unite.getNomUnite()}"></option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="quantite" class="form-label">Quantite</label>
+                    <input type="text" class="form-control" id="quantite" name="quantite" th:value="${typeTravaux.getQuantite()}">
+                    <span style="color: red" th:if="${#fields.hasErrors('quantite')}" th:errors="*{quantite}"></span>
+                  </div>
+                  <div class="mb-3">
+                    <label for="prixUnitaire" class="form-label">Prix Unitaire (Ar)</label>
+                    <input type="text" class="form-control" id="prixUnitaire" name="prixUnitaire" th:value="${typeTravaux.getPrixUnitaire()}">
+                    <span style="color: red" th:if="${#fields.hasErrors('prixUnitaire')}" th:errors="*{prixUnitaire}"></span>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Modifier</button>
+                </form>
+              </div>
+            </div>
+          </div><!-- End Top Selling -->
+        </div>
+      </div><!-- End Left side columns -->
+    </div>
+  </section>
+</main>
+</body>
+
+
+<th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.admin != null}">
+  <script th:inline="javascript">
+    window.location.href = "/btp/errorPage";
+  </script>
+</div>

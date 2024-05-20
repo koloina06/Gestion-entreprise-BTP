@@ -1,0 +1,85 @@
+<div th:if="${session.admin != null}">
+
+    <th:block th:insert="~{/header}"></th:block>
+    <th:block th:insert="~{/sidebar}"></th:block>
+
+    <main id="main" class="main">
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card top-selling overflow-auto"  style="width: 1000px;">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title">Liste des finitions</h5>
+                                    <table class="table table-borderless">
+                                        <thead>
+                                        <tr>
+                                            <th>Type de finition</th>
+                                            <th>augmentation</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="finition : ${finitions}">
+                                            <td th:text="${finition.getTypeFinition()}"></td>
+                                            <td th:text="${finition.getAugmentation()}"></td>
+                                            <td>
+                                                <form action="/btp/finition/toUpdate" method="get">
+                                                    <input type="hidden" th:value="${finition.getIdFinition()}" name="idFinition">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"><i class="bi bi-pencil-square"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- End Top Selling -->
+                    </div>
+                </div><!-- End Left side columns -->
+            </div>
+        </section>
+    </main>
+    </body>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" th:if="${finitions.totalPages}>0">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${finitions.first} ? 'disabled'">
+                <a class="page-link" th:href="@{'/typeTravaux/liste?page=0'}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Afficher les numéros de page en fonction de la page actuelle -->
+            <th:block th:each="pageNum : ${#numbers.sequence(0, finitions.totalPages - 1)}" th:with="currentPage=${finitions.number}">
+                <th:block th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2}">
+                    <li class="page-item" th:classappend="${currentPage == pageNum} ? 'active'">
+                        <a class="page-link" th:href="@{'/typeTravaux/liste?page=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
+                    </li>
+                </th:block>
+            </th:block>
+
+            <li class="page-item" th:classappend="${finitions.last} ? 'disabled'">
+                <a class="page-link" th:href="@{'/film/all?page=' + ${finitions.totalPages - 1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+        <p class="text-center">Nombre total de pages : <span th:text="${finitions.totalPages}"></span></p>
+    </nav>
+</div>
+
+
+<th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.admin != null}">
+    <script th:inline="javascript">
+        window.location.href = "/btp/errorPage";
+    </script>
+</div>

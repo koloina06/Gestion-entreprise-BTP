@@ -1,0 +1,107 @@
+<div th:if="${session.client != null}">
+    <th:block th:insert="~{/header}"></th:block>
+    <th:block th:insert="~{/sidebar}"></th:block>
+
+    <main id="main" class="main">
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card top-selling overflow-auto" style="width: 1000px;">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title">Demander un devis</h5>
+                                    <div th:if="${succes}">
+                                        <div class="alert alert-success" role="alert">
+                                            <i class="bi bi-check-circle me-1" ></i>
+                                            <span th:text="${succes}"></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                    <div th:if="${erreur}">
+                                        <div class="alert alert-danger" role="alert">
+                                            <span th:text="${erreur}"></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                    <form class="row g-3 needs-validation" novalidate action="/btp/devis/createDevis" method="post">
+                                        <div class="row mb-3">
+                                            <label class="col-sm-2 col-form-label">Maison</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-4" th:each="maison : ${maisons}">
+                                                        <div class="card maison-card">
+                                                            <div class="card-body">
+                                                                <label class="card-title maison-radio-container">
+                                                                    <input type="radio" name="maison" th:value="${maison.getIdMaison()}" class="maison-radio">
+                                                                    <h5 th:text="${maison.getTypeMaison()}"></h5>
+                                                                    <p th:text="${maison.getDuree().intValue()} + ' j'"></p>
+                                                                    <div th:if="${maison.getDesc().size()>0}" th:each="desc: ${maison.getDesc()}">
+                                                                        <p th:text="${desc}"></p>
+                                                                    </div>
+                                                                    <div th:if="${maison.getDesc().size()==0}" >
+                                                                        <p th:text="${maison.getDescription()}"></p>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="finition" class="col-sm-2 col-form-label">Finition</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control" aria-label="Default select example" name="finition" id="finition" required>
+                                                    <option th:each="finition : ${finitions}" th:value="${finition.getIdFinition()}" th:text="${finition.getTypeFinition()}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="dateDevis" class="col-sm-2 col-form-label">Date de devis</label>
+                                            <div class="col-sm-10">
+                                                <input type="date" class="form-control" id="dateDevis" name="dateDevis" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="dateDebut" class="col-sm-2 col-form-label">Date début de travaux</label>
+                                            <div class="col-sm-10">
+                                                <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="lieu" class="col-sm-2 col-form-label">Lieu de travaux</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="lieu" name="lieu" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="refDevis" class="col-sm-2 col-form-label">References devis</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="refDevis" name="refDevis" required>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-success">Valider</button>
+                                            <button type="reset" class="btn btn-secondary">Annuler</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div><!-- End Top Selling -->
+                    </div>
+                </div><!-- End Left side columns -->
+            </div>
+        </section>
+    </main>
+
+    <th:block th:insert="~{/footer}"></th:block>
+</div>
+
+<div th:unless="${session.client != null}">
+    <script th:inline="javascript">
+        window.location.href = "/cinepax/errorPage";
+    </script>
+</div>

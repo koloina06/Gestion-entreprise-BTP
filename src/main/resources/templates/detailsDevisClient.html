@@ -1,0 +1,144 @@
+<div th:if="${session.client != null}">
+
+<th:block th:insert="~{/header}"></th:block>
+<th:block th:insert="~{/sidebar}"></th:block>
+<main id="main" class="main">
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card top-selling overflow-auto"  style="width: 1000px;">
+                            <div class="card-body pb-0">
+                                <h5 class="card-title" th:text="'Devis: '+ ${devis.getRefDevis()}"></h5>
+                                <p th:text="'Du '+ ${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')} + ' au' + ${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></p>
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Numero</th>
+                                        <th>Travaux</th>
+                                        <th>Unite</th>
+                                        <th>Quantite</th>
+                                        <th>Prix Unitaire</th>
+                                        <th>Prix Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="details : ${detailsList}">
+                                        <td th:text="${details.getCode()}"></td>
+                                        <td th:text="${details.getNomTypeTravaux()}"></td>
+                                        <td th:text="${details.getUnite().getNomUnite()}"></td>
+                                        <td th:text="${details.getQuantite()}"></td>
+                                        <td th:text="${#numbers.formatDecimal(details.getPrixUnitaire(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                        <td th:text="${#numbers.formatDecimal(details.getPrixTotal(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">Montant Finition</td>
+                                        <td th:text="${#numbers.formatDecimal(devis.getFinition().getMontant(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">Montant Total</td>
+                                        <td th:text="${#numbers.formatDecimal(devis.getPrixTotalDevis(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">Reste à payer</td>
+                                        <td th:if="${devis.getRestePaye()==0}">0 Ar</td>
+                                        <td th:if="${devis.getRestePaye()>0}" th:text="${#numbers.formatDecimal(devis.getRestePaye(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div id="paiement" style="display: none;">
+                                    <div class="alert alert-danger" role="alert">
+                                        <span></span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                                <div th:if="${succes}">
+                                    <div class="alert alert-success" role="alert">
+                                        <span th:text="${succes}"></span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                </div>
+                                <h5 class="card-title" > Effectuer un paiement</h5>
+                                <form class="row g-3 needs-validation" id="paymentForm" novalidate>
+                                    <input type="hidden" name="idDevis" th:value="${devis.getIdDevis()}">
+                                    <div class="row mb-3">
+                                        <label for="refPaiement" class="col-sm-2 col-form-label">Reference paiement</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="refPaiement" name="refPaiement" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="date" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-sm-10">
+                                            <input type="date" class="form-control" id="date" name="date" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="prix" class="col-sm-2 col-form-label">Montant</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="prix" name="prix" required>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" id="submitBtn" class="btn btn-success">Payer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div><!-- End Top Selling -->
+                </div>
+            </div><!-- End Left side columns -->
+        </div>
+    </section>
+</main>
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('#submitBtn').click(function() {
+                // Empêcher la soumission par défaut du formulaire
+                event.preventDefault();
+
+                // Récupérer les données du formulaire
+                var formData = $('#paymentForm').serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/btp/paiement/payerDevis",
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response.key)
+                        if(response.key==="Paiement effectué avec succès"){
+                            var idDevis=[[${devis.getIdDevis()}]]
+                            window.location.href = "/btp/devis/details?idDevis=" + idDevis+"&succes="+response.key+"";
+                        }else if(response.key==="Erreur lors du paiement") {
+                            $('#paiement').css('display', 'inline');
+                            $('#paiement .alert span').text(response.key);
+                            $('#paiement .alert').addClass('alert-danger').removeClass('alert-info').show();
+                        }else {
+                            $('#paiement').css('display', 'inline');
+                            $('#paiement .alert span').text('Famerimbola: '+response.key+' Ar');
+                            $('#paiement .alert').addClass('alert-info').removeClass('alert-danger').show();
+                        }
+
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Afficher l'erreur dans la console du navigateur en cas d'échec de la requête AJAX
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+<th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.client != null}">
+    <script th:inline="javascript">
+        window.location.href = "/btp/errorPage";
+    </script>
+</div>

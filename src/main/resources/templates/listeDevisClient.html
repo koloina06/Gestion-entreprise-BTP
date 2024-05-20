@@ -1,0 +1,76 @@
+<div th:if="${session.client != null}">
+
+    <th:block th:insert="~{/header}"></th:block>
+    <th:block th:insert="~{/sidebar}"></th:block>
+
+    <main id="main" class="main">
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card top-selling overflow-auto"  style="width: 1000px;">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title">Mes devis</h5>
+                                    <table class="table table-borderless">
+                                        <thead>
+                                        <tr>
+                                            <th>References</th>
+                                            <th>Maison</th>
+                                            <th>Finition</th>
+                                            <th>Date devis</th>
+                                            <th>Date début</th>
+                                            <th>Date fin</th>
+                                            <th>Prix total</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="devis : ${devisList}">
+                                            <td th:text="${devis.getRefDevis()}"></td>
+                                            <td th:text="${devis.getMaison().getTypeMaison()}"></td>
+                                            <td th:text="${devis.getFinition().getTypeFinition()}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDevis(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPrixTotalDevis(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                            <td>
+                                                <form action="/btp/devis/details" method="get">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"> <i class="bi bi-info-circle"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="/btp/devis/exportPDF" method="post" class="col-md-3">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"><i class="bi bi-file-earmark-pdf"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- End Top Selling -->
+                    </div>
+                </div><!-- End Left side columns -->
+            </div>
+        </section>
+    </main>
+    </body>
+
+
+    <th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.client != null}">
+    <script th:inline="javascript">
+        window.location.href = "/btp/errorPage";
+    </script>
+</div>

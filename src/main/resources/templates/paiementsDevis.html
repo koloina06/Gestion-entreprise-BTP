@@ -1,0 +1,55 @@
+<div th:if="${session.admin != null}">
+
+    <th:block th:insert="~{/header}"></th:block>
+    <th:block th:insert="~{/sidebar}"></th:block>
+
+    <main id="main" class="main">
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card top-selling overflow-auto"  style="width: 1000px;">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title">Liste des paiements effectués</h5>
+                                    <h5 class="card-title" th:text="'Devis numero: '+ ${devis.getRefDevis()}"></h5>
+                                    <div th:if="${paiements.size()==0}">
+                                        <div class="alert alert-info" role="alert">
+                                            <span>Aucun paiement effectué</span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-borderless" th:if="${paiements.size()>0}">
+                                        <thead>
+                                        <tr>
+                                            <th>Date de paiement</th>
+                                            <th>Montant payé</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="paiement : ${paiements}">
+                                            <td th:text="${#dates.format(paiement.getDatePaiement(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(paiement.getMontant(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- End Top Selling -->
+                    </div>
+                </div><!-- End Left side columns -->
+            </div>
+        </section>
+    </main>
+    </body>
+
+
+    <th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.admin != null}">
+    <script th:inline="javascript">
+        window.location.href = "/btp/errorPage";
+    </script>
+</div>

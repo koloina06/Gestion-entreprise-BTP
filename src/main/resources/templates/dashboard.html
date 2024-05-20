@@ -1,0 +1,147 @@
+<div th:if="${session.admin != null}">
+
+<th:block th:insert="~{/header}"></th:block>
+<th:block th:insert="~{/sidebar}"></th:block>
+
+<main id="main" class="main">
+  <section class="section dashboard">
+    <div class="row">
+      <!-- Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
+
+                <h5 class="card-title">Tableau de bord des devis</span></h5>
+          <div class="row">
+            <div class="col-xxl-6 col-md-12">
+              <div class="card info-card sales-card">
+                <div class="card-body" >
+                  <h5 class="card-title">Montant total des devis</h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-cash"></i>
+                    </div>
+                    <div class="ps-3" >
+                      <h6 th:text="${#numbers.formatDecimal(montantTotal, 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xxl-6 col-md-12">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">Montant total paiement effectué</h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-cash"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6 th:text="${#numbers.formatDecimal(paiementTotal, 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card top-selling overflow-auto"  style="width: 1000px;">
+              <div class="card-body pb-0">
+                <h5 class="card-title">Voir l'histogramme par an</span></h5>
+                    <form class="row g-3 needs-validation" novalidate action="" method="get">
+                      <div class="row mb-3">
+                        <label for="annee" class="col-sm-2 col-form-label">Annee</label>
+                        <div class="col-sm-10">
+                          <input type="number" class="form-control" id="annee" name="annee" required>
+                        </div>
+                      </div>
+                      <div class="row mb-3" style="width: 800px; margin-left: 150px">
+                          <button type="submit" class="btn btn-primary form-control">Voir</button>
+                      </div>
+                    </form>
+              </div>
+            </div>
+          </div><!-- End Top Selling -->
+
+          <div th:if="${montants}" class="col-lg-6" style="width: 1000px;" >
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title" th:text="'Histogramme ' +${annee}"></h5>
+
+                <canvas id="barChart" style="max-height: 400px;"></canvas>
+
+                <script th:inline="javascript">
+                  var montants= [[${montants}]]
+                  document.addEventListener("DOMContentLoaded", () => {
+                    new Chart(document.querySelector('#barChart'), {
+                      type: 'bar',
+                      data: {
+                        labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
+                        datasets: [{
+                          label: 'devis',
+                          data: montants,
+                          backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+
+                          ],
+                          borderColor: [
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                          ],
+                          borderWidth: 1
+                        }]
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }
+                    });
+                  });
+                </script>
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div><!-- End Left side columns -->
+    </div>
+  </section>
+</main>
+</body>
+
+
+<th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.admin != null}">
+  <script th:inline="javascript">
+    window.location.href = "/btp/errorPage";
+  </script>
+</div>

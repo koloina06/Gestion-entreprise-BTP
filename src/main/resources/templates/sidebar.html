@@ -1,0 +1,105 @@
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item" th:if="${session.client}">
+            <a class="nav-link collapsed" data-bs-target="#devisClient" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Devis</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+
+            <ul id="devisClient" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/btp/devis/demandeDevis">
+                        <i class="bi bi-circle"></i><span>Demande</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/btp/devis/listeClient">
+                        <i class="bi bi-circle"></i><span>Mes devis</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item" th:if="${session.admin}">
+            <a class="nav-link collapsed" href="/btp/devis/dashboard">
+                <i class="bi bi-grid"></i>
+                <span>Tableau de bord</span>
+            </a>
+        </li>
+        <li class="nav-item" th:if="${session.admin}">
+            <a class="nav-link collapsed" href="/btp/traitement/reinitialiser">
+                <i class="bi bi-grid"></i>
+                <span>Reinitialiser</span>
+            </a>
+        </li>
+
+        <li class="nav-item" th:if="${session.admin}">
+
+            <a class="nav-link collapsed" data-bs-target="#devisAdmin" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Devis</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+
+            <ul id="devisAdmin" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/btp/devis/listeEnCours">
+                        <i class="bi bi-circle"></i><span>en cours</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item" th:if="${session.admin}">
+
+            <a class="nav-link collapsed" data-bs-target="#typeTravaux" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Type de travaux</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+
+            <ul id="typeTravaux" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/btp/typeTravaux/liste">
+                        <i class="bi bi-circle"></i><span>liste</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item" th:if="${session.admin}">
+
+            <a class="nav-link collapsed" data-bs-target="#import" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Import</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+
+            <ul id="import" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/btp/traitement/toCSVMaisonTravauxDevis">
+                        <i class="bi bi-circle"></i><span>Maison, travaux  et devis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/btp/traitement/toCSVPaiement">
+                        <i class="bi bi-circle"></i><span>Paiement</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item" th:if="${session.admin}">
+
+            <a class="nav-link collapsed" data-bs-target="#finition" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Finition</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+
+            <ul id="finition" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/btp/finition/liste">
+                        <i class="bi bi-circle"></i><span>Liste</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+
+</aside>

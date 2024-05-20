@@ -1,0 +1,160 @@
+<div th:if="${session.admin != null}">
+
+    <th:block th:insert="~{/header}"></th:block>
+    <th:block th:insert="~{/sidebar}"></th:block>
+
+    <main id="main" class="main">
+        <section class="section dashboard">
+            <div class="row">
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card top-selling overflow-auto"  style="width: 1300px;">
+                                <div class="card-body pb-0">
+                                    <h5 class="card-title">Liste des devis en cours</h5>
+                                    <table class="table table-borderless">
+                                        <thead>
+                                        <tr>
+                                            <th>Reference</th>
+                                            <th>Client</th>
+                                            <th>Maison</th>
+                                            <th>Finition</th>
+                                            <th>Date devis</th>
+                                            <th>Date début</th>
+                                            <th>Date fin</th>
+                                            <th>Prix total</th>
+                                            <th>% paiement effectué</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="devis : ${devisList}" th:if="${devis.getPourcentage()<50}" style="color: red">
+                                            <td th:text="${devis.getRefDevis()}"></td>
+                                            <td th:text="${devis.getNumero()}"></td>
+                                            <td th:text="${devis.getMaison().getTypeMaison()}"></td>
+                                            <td th:text="${devis.getFinition().getTypeFinition()}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDevis(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPrixTotalDevis(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPourcentage(), 1,2)} + ' %'"></td>
+                                            <td>
+                                                <form action="/btp/devis/detailsEnCours" method="get">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"> <i class="bi bi-info-circle"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="/btp/paiement/paiementEnCours" method="get" class="col-md-3">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Paiements
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:each="devis : ${devisList}" th:if="${devis.getPourcentage()>50}" style="color: green">
+                                            <td th:text="${devis.getRefDevis()}"></td>
+                                            <td th:text="${devis.getNumero()}"></td>
+                                            <td th:text="${devis.getMaison().getTypeMaison()}"></td>
+                                            <td th:text="${devis.getFinition().getTypeFinition()}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDevis(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPrixTotalDevis(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPourcentage(), 1,2)} + ' %'"></td>
+                                            <td>
+                                                <form action="/btp/devis/detailsEnCours" method="get">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"> <i class="bi bi-info-circle"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="/btp/paiement/paiementEnCours" method="get" class="col-md-3">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Paiements
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:each="devis : ${devisList}" th:if="${devis.getPourcentage()==50}">
+                                            <td th:text="${devis.getRefDevis()}"></td>
+                                            <td th:text="${devis.getNumero()}"></td>
+                                            <td th:text="${devis.getMaison().getTypeMaison()}"></td>
+                                            <td th:text="${devis.getFinition().getTypeFinition()}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDevis(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateDebut(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(devis.getDateFin(), 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPrixTotalDevis(), 3, 'WHITESPACE', 2,'COMMA' )} + ' Ar'"></td>
+                                            <td th:text="${#numbers.formatDecimal(devis.getPourcentage(), 1,2)} + ' %'"></td>
+                                            <td>
+                                                <form action="/btp/devis/detailsEnCours" method="get">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <div class="icon"> <i class="bi bi-info-circle"></i></div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="/btp/paiement/paiementEnCours" method="get" class="col-md-3">
+                                                    <input type="hidden" th:value="${devis.getIdDevis()}" name="idDevis">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Paiements
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- End Top Selling -->
+                    </div>
+                </div><!-- End Left side columns -->
+            </div>
+        </section>
+    </main>
+    </body>
+
+    <nav aria-label="Page navigation" th:if="${devisList.totalPages}>0">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${devisList.first} ? 'disabled'">
+                <a class="page-link" th:href="@{'/devis/listeEnCours?page=0'}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Afficher les numéros de page en fonction de la page actuelle -->
+            <th:block th:each="pageNum : ${#numbers.sequence(0, devisList.totalPages - 1)}" th:with="currentPage=${devisList.number}">
+                <th:block th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2}">
+                    <li class="page-item" th:classappend="${currentPage == pageNum} ? 'active'">
+                        <a class="page-link" th:href="@{'/devis/listeEnCours?page=' + ${pageNum}}" th:text="${pageNum + 1}"></a>
+                    </li>
+                </th:block>
+            </th:block>
+
+            <li class="page-item" th:classappend="${devisList.last} ? 'disabled'">
+                <a class="page-link" th:href="@{'/devis/listeEnCours?page=' + ${devisList.totalPages - 1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+        <p class="text-center">Nombre total de pages : <span th:text="${devisList.totalPages}"></span></p>
+    </nav>
+
+
+    <th:block th:insert="~{/footer}"></th:block>
+
+</div>
+<div th:unless="${session.admin != null}">
+    <script th:inline="javascript">
+        window.location.href = "/btp/errorPage";
+    </script>
+</div>
